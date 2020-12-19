@@ -1,4 +1,5 @@
 #gcc -o bin/executable src/main.c  `sdl2-config --cflags --libs` `pkg-config --cflags --libs SDL2_image`
+#MAKEFILE
 
 GC=gcc
 CFLAGS=-O2 -Wall
