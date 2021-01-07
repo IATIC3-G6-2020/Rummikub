@@ -114,8 +114,48 @@ void tri_777() {
 	}
 }
 
+void tri_par_couleur() {
+	int couleur, compteur;
+	TUILE pivot;
+	for (int i = 0; i < 56; i++) {
+		couleur = paquet[i].couleurTuile;
+		if (couleur != TRANSPARENT) {
+			compteur = 1;
+			for (int j = i+1; j < 56; j++) {
+				if (paquet[j].couleurTuile == couleur) {
+					pivot = paquet[i+compteur];
+					paquet[i+compteur] = paquet[j];
+					paquet[j] = pivot;
+					compteur++;
+				}
+			}
+		}
+	}
+}
+
+void tri_par_selection() {
+	int min, couleur;
+	TUILE pivot;
+	for (int i = 0; i < 56; i++ ) {
+		min = i;
+		couleur = paquet[i].couleurTuile;
+		if (couleur != TRANSPARENT) {
+			for (int j = i+1; j < 56; j++) {
+				if (paquet[j].couleurTuile == couleur) {
+					if (paquet[min].chiffre > paquet[j].chiffre) {
+						pivot = paquet[min];
+						paquet[min] = paquet[j];
+						paquet[j] = pivot;
+					}
+				}
+			}
+		}
+	}
+}
+
 void tri_789() {
-//mm couleur + suite croissante
+	tri_par_couleur();
+	tri_par_selection();
 }
 
 int main() {
@@ -131,8 +171,8 @@ int main() {
 		printf("couleur %d numero %d\n", paquet[i].couleurTuile, paquet[i].chiffre);
 	}
 	printf("-------------------------------------------------\n");
-	tri_777();
-	printf("Après tri\n");
+	tri_789();
+	printf("Après tri 789\n");
 	for (int i = 0; i < 56; i++) {
 		printf("couleur %d numero %d\n", paquet[i].couleurTuile, paquet[i].chiffre);
 	}
