@@ -1,5 +1,5 @@
 typedef enum {VIDE, NON_VIDE} TYPE_TUILE;
-typedef enum {c1,c2,c3,c4} COULEUR_TUILE;
+typedef enum {c1,c2,c3,c4,c0} COULEUR_TUILE;
 
 typedef struct TUILE
 {
@@ -19,6 +19,7 @@ typedef struct JOUEUR
 
 
 void initialisation_plateau(TUILE plateau[13][10]);
+void initialisation_chevalet(TUILE chevalet[10][3]);
 void creation_tuiles(TUILE *paquet);
 void melanger_paquet_tuiles(TUILE *paquet);
 void distribuer_tuiles(JOUEUR *joueur, TUILE *paquet);
@@ -26,3 +27,5 @@ void distribuer_tuiles(JOUEUR *joueur, TUILE *paquet);
 void creation_joueurs(JOUEUR *joueurs);
 void tri_777(TUILE *paquet);
 void tri_789(TUILE *paquet);
+void tri_par_couleur(TUILE *paquet);
+void tri_par_selection(TUILE *paquet);

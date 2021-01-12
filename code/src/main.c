@@ -16,11 +16,14 @@ void SDL_ExitWithError(const char *message);
 SDL_Rect SDL_CreationRectangle(SDL_Renderer *renderer, int x, int y, int w, int h);
 SDL_Rect SDL_CreationRectangleRempli(SDL_Renderer *renderer, int x, int y, int w, int h);
 void SDL_CreationLigne(SDL_Renderer *renderer, int x1, int y1, int x2, int y2);
-void SDL_CreationTableau(SDL_Renderer *renderer);
+//void SDL_CreationTableau(SDL_Renderer *renderer);
+//void SDL_CreationTableauChe(SDL_Renderer *renderer);
+void SDL_CreationTableau(SDL_Renderer *renderer, int x, int y, int w, int h);
 void SDL_CreationImage(SDL_Renderer *renderer, SDL_Surface *picture, SDL_Texture *texture, SDL_Rect dest_rect, char *imageName);
-void Mouse_Events(SDL_Renderer *renderer);
+void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10][3]);
 void affiche_fin_partie();
-void SDL_AfficheTuile(SDL_Renderer *renderer, TUILE plateau[13][10]);
+void SDL_AfficheTuile_plateau(SDL_Renderer *renderer, TUILE plateau[13][10]);
+void SDL_AfficheTuile_chevalet(SDL_Renderer *renderer, TUILE chevalet[10][3]);
 
 
 int main(int argc, char *argv[])
@@ -95,10 +98,12 @@ int main(int argc, char *argv[])
 	SDL_CreationRectangle(renderer, 10, (hauteur - 110), 100, 100);*/
 
 	
-
-	SDL_CreationTableau(renderer);
-
-
+    /*
+    SDL_CreationTableau(renderer);
+    SDL_CreationTableauChe(renderer);
+    */
+    SDL_CreationTableau(renderer,150, 20, 520, 400);
+    SDL_CreationTableau(renderer,200, 450, 400, 120);
 
 
     /* creation tuile :
@@ -138,11 +143,13 @@ int main(int argc, char *argv[])
 
     //int nbJoueurs = 0;
     TUILE plateau[13][10];
+    TUILE chevalet[10][3];
     TUILE paquet [56];
     //JOUEUR *joueurs;
 
     
     initialisation_plateau(plateau);
+    initialisation_chevalet(chevalet);
     
 
     plateau[0][0].chiffre = 8;
@@ -152,12 +159,17 @@ int main(int argc, char *argv[])
     plateau[8][4].chiffre = 3;
     plateau[8][4].couleurTuile = c2;
     plateau[8][4].typeTuile = NON_VIDE;
-
+    
+    chevalet[0][0].chiffre = 5;
+    chevalet[0][0].couleurTuile = c3;
+    chevalet[0][0].typeTuile = NON_VIDE;
+    
     
 
     SDL_RenderPresent(renderer);
 
-    SDL_AfficheTuile(renderer, plateau);
+    SDL_AfficheTuile_plateau(renderer, plateau);
+    SDL_AfficheTuile_chevalet(renderer, chevalet);
 
     
 
@@ -203,7 +215,7 @@ int main(int argc, char *argv[])
     */
 
     
-    Mouse_Events(renderer);
+    Mouse_Events(renderer,plateau,chevalet);
 
     /*while(1)
     	SDL_Delay(1000);*/
@@ -218,16 +230,12 @@ int main(int argc, char *argv[])
     return EXIT_SUCCESS;
 }
 
-void SDL_AfficheTuile(SDL_Renderer *renderer, TUILE plateau[13][10]){
-
-
+void SDL_AfficheTuile_plateau(SDL_Renderer *renderer, TUILE plateau[13][10]){
     SDL_Init(SDL_INIT_VIDEO);
-
     if(TTF_Init() == -1){
         fprintf(stderr, "Erreur TTF_INIT : %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
-
     TTF_Font* verdana = TTF_OpenFont("src/verdana.ttf", 20);
     if (verdana == NULL){
         fprintf(stderr, "error: pas de font\n");
@@ -238,25 +246,16 @@ void SDL_AfficheTuile(SDL_Renderer *renderer, TUILE plateau[13][10]){
     SDL_Color gold = {255, 200, 0, 0};
     SDL_Color black = {0, 0, 0, 0};
     //SDL_Color white = {255, 255 ,255, 0};
-
-
-
     for(int i=0; i<13; i++){
         for(int j=0; j<10; j++){
             if(plateau[i][j].typeTuile == NON_VIDE){
-                printf("Il y a une tuile non vide à %d,%d\n",i,j);
-
-
+                printf("Il y a une tuile non vide dans le plateau à %d,%d\n",i,j);
                 SDL_CreationRectangleRempli(renderer,155+i*40,20+j*40,30,40);
-
                 SDL_Surface* surfaceMessage = NULL ;
-
                 char buf[16];
                 sprintf(buf,"%d",plateau[i][j].chiffre);
                 printf("C'est le chiffre %d\n",plateau[i][j].chiffre);
-
-                switch (plateau[i][j].couleurTuile)
-                {
+                switch (plateau[i][j].couleurTuile){
                 case c1:
                     printf("De couleur rouge\n\n");
                     surfaceMessage = TTF_RenderText_Solid(verdana, buf, red);
@@ -273,29 +272,80 @@ void SDL_AfficheTuile(SDL_Renderer *renderer, TUILE plateau[13][10]){
                     printf("De couleur noir\n\n");
                     surfaceMessage = TTF_RenderText_Solid(verdana, buf, black);
                     break;
-                
                 }
-
-
                 SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
                 SDL_FreeSurface(surfaceMessage);
-                
                 SDL_Rect Message_rect;
                 Message_rect.x = 163+i*40; //150+13+0*40
                 Message_rect.y = 30+j*40;  //20+10+0*40
                 Message_rect.w = 16;
                 Message_rect.h = 30;
-
                 SDL_RenderCopy(renderer,Message,NULL,&Message_rect);
-
                 SDL_RenderPresent(renderer);
                 SDL_DestroyTexture(Message);
-
-
             }
         }
     }
-        TTF_CloseFont(verdana);
+    TTF_CloseFont(verdana);
+}
+
+void SDL_AfficheTuile_chevalet(SDL_Renderer *renderer, TUILE chevalet[10][3]){
+    SDL_Init(SDL_INIT_VIDEO);
+    if(TTF_Init() == -1){
+        fprintf(stderr, "Erreur TTF_INIT : %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
+    TTF_Font* verdana = TTF_OpenFont("src/verdana.ttf", 20);
+    if (verdana == NULL){
+        fprintf(stderr, "error: pas de font\n");
+        exit(EXIT_FAILURE);
+    }
+    SDL_Color red = {255, 0, 0, 0};
+    SDL_Color blue = {0, 0, 255, 0};
+    SDL_Color gold = {255, 200, 0, 0};
+    SDL_Color black = {0, 0, 0, 0};
+    //SDL_Color white = {255, 255 ,255, 0};
+    for(int i=0; i<10; i++){
+        for(int j=0; j<3; j++){
+            if(chevalet[i][j].typeTuile == NON_VIDE){
+                printf("Il y a une tuile non vide dans le chevalet à %d,%d\n",i,j);
+                SDL_CreationRectangleRempli(renderer,205+i*40,450+j*40,30,40);
+                SDL_Surface* surfaceMessage = NULL ;
+                char buf[16];
+                sprintf(buf,"%d",chevalet[i][j].chiffre);
+                printf("C'est le chiffre %d\n",chevalet[i][j].chiffre);
+                switch (chevalet[i][j].couleurTuile){
+                case c1:
+                    printf("De couleur rouge\n\n");
+                    surfaceMessage = TTF_RenderText_Solid(verdana, buf, red);
+                    break;
+                case c2:
+                    printf("De couleur bleu\n\n");
+                    surfaceMessage = TTF_RenderText_Solid(verdana, buf, blue);
+                    break;
+                case c3:
+                    printf("De couleur dorée\n\n");
+                    surfaceMessage = TTF_RenderText_Solid(verdana, buf, gold);
+                    break;
+                case c4:
+                    printf("De couleur noir\n\n");
+                    surfaceMessage = TTF_RenderText_Solid(verdana, buf, black);
+                    break;
+                }
+                SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+                SDL_FreeSurface(surfaceMessage);
+                SDL_Rect Message_rect;
+                Message_rect.x = 213+i*40; //150+13+0*40
+                Message_rect.y = 460+j*40;  //20+10+0*40
+                Message_rect.w = 16;
+                Message_rect.h = 30;
+                SDL_RenderCopy(renderer,Message,NULL,&Message_rect);
+                SDL_RenderPresent(renderer);
+                SDL_DestroyTexture(Message);
+            }
+        }
+    }
+    TTF_CloseFont(verdana);
 }
 
 void SDL_ExitWithError(const char *message)
@@ -337,15 +387,16 @@ void SDL_CreationLigne(SDL_Renderer *renderer, int x1, int y1, int x2, int y2)
 		SDL_ExitWithError("Impossible de dessiner une ligne"); 
 }
 
-void SDL_CreationTableau(SDL_Renderer *renderer)
-{
-	SDL_CreationRectangle(renderer, 150, 20, 520, 400);
-	for (int i = 20; i < 530; i+=40)
-	{
-		if (i < 420)
-			SDL_CreationLigne(renderer, 150, i, 670, i);
-		SDL_CreationLigne(renderer, (130 + i), 20, (130 + i), 420);
+void SDL_CreationTableau(SDL_Renderer *renderer, int x, int y, int w, int h){
+	SDL_CreationRectangle(renderer, x, y, w, h);
+	for (int i = y; i < y+h; i+=40)
+	{	
+		SDL_CreationLigne(renderer, x, i, x+w, i);	
 	}
+    for (int i = x; i < x+w; i+=40)
+	{
+        SDL_CreationLigne(renderer, i, y, i, y+h);
+    }
 }
 
 
@@ -384,7 +435,7 @@ void SDL_CreationImage(SDL_Renderer *renderer, SDL_Surface *picture, SDL_Texture
 	}
 }
 
-void Mouse_Events(SDL_Renderer *renderer){
+void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10][3]){
 	SDL_bool game = SDL_TRUE;
 	int posX, posY;
 
@@ -417,16 +468,58 @@ void Mouse_Events(SDL_Renderer *renderer){
 
                     }
                     if(posX >= 150 && posX <= 670 && posY >= 20 && posY <= 420){
-
                         SDL_Log("Plateau %d ; %d", posX, posY);
-
                         int ncl = (posX-150)/40;
                         int ncc = (posY-20)/40;
-
                         SDL_Log("case %d ; %d", ncl, ncc);
-
+                        if(plateau[ncl][ncc].typeTuile == NON_VIDE){
+                            printf("c'est non vide\n");
+                            printf("C'est le chiffre %d\n",plateau[ncl][ncc].chiffre);
+                            switch (plateau[ncl][ncc].couleurTuile){
+                            case c1:
+                                printf("De couleur rouge\n\n");
+                                break;
+                            case c2:
+                                printf("De couleur bleu\n\n");
+                                break;
+                            case c3:
+                                printf("De couleur dorée\n\n");
+                                break;
+                            case c4:
+                                printf("De couleur noir\n\n");
+                                break;
+                            }
+                        }else{
+                            printf("\n");
+                        }
                         break;
-
+                    }
+                    if(posX >= 200 && posX <= 600 && posY >= 450 && posY <= 570){
+                        SDL_Log("Chevalet %d ; %d", posX, posY);
+                        int ncl = (posX-200)/40;
+                        int ncc = (posY-450)/40;
+                        SDL_Log("case %d ; %d", ncl, ncc);
+                        if(chevalet[ncl][ncc].typeTuile == NON_VIDE){
+                            printf("c'est non vide\n");
+                            printf("C'est le chiffre %d\n",chevalet[ncl][ncc].chiffre);
+                            switch (chevalet[ncl][ncc].couleurTuile){
+                            case c1:
+                                printf("De couleur rouge\n\n");
+                                break;
+                            case c2:
+                                printf("De couleur bleu\n\n");
+                                break;
+                            case c3:
+                                printf("De couleur dorée\n\n");
+                                break;
+                            case c4:
+                                printf("De couleur noir\n\n");
+                                break;
+                            }
+                        }else{
+                            printf("\n");
+                        }
+                        break;
                     }
 
 

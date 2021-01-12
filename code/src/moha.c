@@ -17,6 +17,21 @@ void initialisation_plateau(TUILE plateau[13][10]) {
 	}
 }
 
+void initialisation_chevalet(TUILE chevalet[10][3]) {
+	TUILE tuileVide;
+	int i,j;
+	tuileVide.chiffre = -1;
+	tuileVide.couleurTuile = VIDE;
+	tuileVide.typeTuile = VIDE;
+	for(i = 0; i < 10; i++) 
+	{
+		for (j = 0; j < 3; j++)
+		{
+			chevalet[i][j] = tuileVide;
+		}
+	}
+}
+
 void creation_tuiles(TUILE *paquet) {
 	TUILE tuile;
 	tuile.typeTuile = NON_VIDE;
@@ -95,5 +110,45 @@ void tri_777(TUILE *paquet) {
 }
 
 void tri_789(TUILE *paquet) {
-//mm couleur + suite croissante
+	tri_par_couleur(paquet);
+	tri_par_selection(paquet);
+}
+
+void tri_par_couleur(TUILE *paquet) {
+	int couleur, compteur;
+	TUILE pivot;
+	for (int i = 0; i < 56; i++) {
+		couleur = paquet[i].couleurTuile;
+		if (couleur != c0) {
+			compteur = 1;
+			for (int j = i+1; j < 56; j++) {
+				if (paquet[j].couleurTuile == couleur) {
+					pivot = paquet[i+compteur];
+					paquet[i+compteur] = paquet[j];
+					paquet[j] = pivot;
+					compteur++;
+				}
+			}
+		}
+	}
+}
+
+void tri_par_selection(TUILE *paquet) {
+	int min, couleur;
+	TUILE pivot;
+	for (int i = 0; i < 56; i++ ) {
+		min = i;
+		couleur = paquet[i].couleurTuile;
+		if (couleur != c0) {
+			for (int j = i+1; j < 56; j++) {
+				if (paquet[j].couleurTuile == couleur) {
+					if (paquet[min].chiffre > paquet[j].chiffre) {
+						pivot = paquet[min];
+						paquet[min] = paquet[j];
+						paquet[j] = pivot;
+					}
+				}
+			}
+		}
+	}
 }
