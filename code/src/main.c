@@ -12,6 +12,8 @@
 #include <SDL2/SDL_ttf.h>
 #include "moha.h"
 
+typedef enum {clicplateau,clicchevalet} BOUTON;
+
 void SDL_ExitWithError(const char *message);
 SDL_Rect SDL_CreationRectangle(SDL_Renderer *renderer, int x, int y, int w, int h);
 SDL_Rect SDL_CreationRectangleRempli(SDL_Renderer *renderer, int x, int y, int w, int h);
@@ -20,7 +22,7 @@ void SDL_CreationLigne(SDL_Renderer *renderer, int x1, int y1, int x2, int y2);
 //void SDL_CreationTableauChe(SDL_Renderer *renderer);
 void SDL_CreationTableau(SDL_Renderer *renderer, int x, int y, int w, int h);
 void SDL_CreationImage(SDL_Renderer *renderer, SDL_Surface *picture, SDL_Texture *texture, SDL_Rect dest_rect, char *imageName);
-void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10][3]);
+void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10][3], int coords[2]);
 void affiche_fin_partie();
 void SDL_AfficheTuile_plateau(SDL_Renderer *renderer, TUILE plateau[13][10]);
 void SDL_AfficheTuile_chevalet(SDL_Renderer *renderer, TUILE chevalet[10][3]);
@@ -214,8 +216,10 @@ int main(int argc, char *argv[])
         }
     */
 
-    
-    Mouse_Events(renderer,plateau,chevalet);
+    int coord[2]={0,0};
+    Mouse_Events(renderer,plateau,chevalet,coord);
+
+    printf("returned coords x:%d,y:%d",coord[0],coord[1]);
 
     /*while(1)
     	SDL_Delay(1000);*/
@@ -435,12 +439,14 @@ void SDL_CreationImage(SDL_Renderer *renderer, SDL_Surface *picture, SDL_Texture
 	}
 }
 
-void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10][3]){
+void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10][3],int coords[2]){
 	SDL_bool game = SDL_TRUE;
 	int posX, posY;
+    
 
 	while(game){
-        SDL_Event event;	
+        SDL_Event event;
+        BOUTON bouton = -1;	
         while(SDL_PollEvent(&event)){
             switch(event.type){
                 case SDL_QUIT: 	
@@ -468,6 +474,7 @@ void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10
 
                     }
                     if(posX >= 150 && posX <= 670 && posY >= 20 && posY <= 420){
+                        bouton = clicplateau;
                         SDL_Log("Plateau %d ; %d", posX, posY);
                         int ncl = (posX-150)/40;
                         int ncc = (posY-20)/40;
@@ -495,6 +502,7 @@ void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10
                         break;
                     }
                     if(posX >= 200 && posX <= 600 && posY >= 450 && posY <= 570){
+                        bouton = clicchevalet;
                         SDL_Log("Chevalet %d ; %d", posX, posY);
                         int ncl = (posX-200)/40;
                         int ncc = (posY-450)/40;
@@ -522,20 +530,26 @@ void Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[10
                         break;
                     }
 
-
-
-
-
                     else{ 
                         SDL_Log("NaN : x = %d ; y = %d ", posX, posY);
                     }
                     break;
             }
             break;
+            if(bouton == clicchevalet || bouton == clicplateau){
+                break;
+            }
+        }
+        if(bouton == clicchevalet || bouton == clicplateau){
+                break;
         }
 	}
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
+    coords[0] = posX;
+    coords[1] = posY;
+    printf("coords function x:%d,y:%d\n\n",coords[0],coords[1]);
+
 }
 
 void affiche_fin_partie(JOUEUR *joueurs)
