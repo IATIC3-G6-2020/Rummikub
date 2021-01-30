@@ -12,27 +12,27 @@ void affiche_fin_partie()
     SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
     SDL_Rect dest_rect;
 
-    dest_rect = SDL_CreationRectangle(renderer, 0, -70, 500, 500);
+    dest_rect = SDL_CreationRectangle(renderer, 125, 5, 250, 250);
 
     SDL_Surface * image_rep = NULL;
     SDL_Texture * texture_rep = SDL_CreateTextureFromSurface(renderer, image_rep);
     SDL_Rect dest_rect_rep;
 
     //Tester le numero du joueur actuel pour savoir le vainqueur
-    //j->numero=2;
-    if(j->numero==1)
+    j[i].numero=1;
+    if(j[i].numero==1)
     SDL_CreationImage(renderer, image, texture, dest_rect, "1wins.png");
 
-    if(j->numero==2)
+    if(j[i].numero==2)
     SDL_CreationImage(renderer, image, texture, dest_rect, "2wins.png");
 
 
-    if(j->numero==3)
-    SDL_CreationImage(renderer, image, texture, dest_rect, "1wins.png");
+    if(j[i].numero==3)
+    SDL_CreationImage(renderer, image, texture, dest_rect, "3wins.png");
 
 
-    if(j->numero==4)
-    SDL_CreationImage(renderer, image, texture, dest_rect, "1wins.png");
+    if(j[i].numero==4)
+    SDL_CreationImage(renderer, image, texture, dest_rect, "4wins.png");
 
 
     //Creation de deux zones cliquables une pour rejouer et l'autre pour quitter
@@ -57,12 +57,12 @@ void affiche_fin_partie()
                    {
                         quit = true;
                         SDL_DestroyTexture(texture);    SDL_FreeSurface(image);    SDL_DestroyRenderer(renderer);   SDL_DestroyWindow(window);
-                        affiche_palteau();     //printf("rejouer");
+                        affiche_palteau();
                     }
                 //Tester la position du curseur sur le bouton Quitter
                 if(position_clic_x<=500 && position_clic_x>=250 && position_clic_y <= 500 && position_clic_y >=250)
                     {
-                        quit = true;   //printf("Quitter");
+                        quit = true;
                     }break;
         }
         SDL_RenderCopy(renderer, texture, NULL, NULL);          SDL_RenderPresent(renderer);
