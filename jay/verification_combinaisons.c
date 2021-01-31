@@ -1,4 +1,4 @@
-//main.c 
+//main.c à remplacer par l'ancien où il y avait marqué SDL_Log("VALIDE");
 
 if(posX >= 705 && posX <= 785 && posY >= 471 && posY <= 550)  {	
 	bool test = verification_combinaisons(plateau);
@@ -12,7 +12,7 @@ if(posX >= 705 && posX <= 785 && posY >= 471 && posY <= 550)  {
 		break; 
 		}
 	
-//moha.h
+//moha.h  --> à rajouter tout ça dedans
 
 int vi;		//variables globales juste en dessous de typedef enum
 int vj;
@@ -22,7 +22,7 @@ bool verification_combinaisons789(TUILE plateau[13][10], int i, int j);
 bool verification_combinaisons777(TUILE plateau[13][10], int i, int j);
 	
 		
-//moha.c
+//moha.c	fonctions
 
 bool verification_combinaisons(TUILE plateau[13][10]){
 	vi = 0, vj = 0;
