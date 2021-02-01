@@ -19,7 +19,7 @@ void affiche_fin_partie()
     SDL_Rect dest_rect_rep;
 
     //Tester le numero du joueur actuel pour savoir le vainqueur
-    j[i].numero=1;
+    //j[i].numero=1;
     if(j[i].numero==1)
     SDL_CreationImage(renderer, image, texture, dest_rect, "1wins.png");
 
