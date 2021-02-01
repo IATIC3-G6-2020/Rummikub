@@ -57,6 +57,7 @@ void affiche_fin_partie()
                    {
                         quit = true;
                         SDL_DestroyTexture(texture);    SDL_FreeSurface(image);    SDL_DestroyRenderer(renderer);   SDL_DestroyWindow(window);
+                        //fonction de rejouer
                         affiche_palteau();
                     }
                 //Tester la position du curseur sur le bouton Quitter
