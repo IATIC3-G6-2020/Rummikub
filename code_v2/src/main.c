@@ -78,6 +78,7 @@ int main(int argc, char *argv[]){
     TUILE selectedtuile[30];
     int placement[30][4];
     int tourjoueur = 0;
+    bool test = -1;
 
     /* ====================MOUSE EVENT======================= */
     while(tableau != clicstop){
@@ -202,21 +203,29 @@ int main(int argc, char *argv[]){
 	            piocher_tuile(&joueur[tourjoueur],paquet);
 	            inventaire_en_chevalet(&joueur[tourjoueur], chevalet);
                 SDL_Update_window(renderer, plateau, chevalet);
+                test = true;
             }
             else{
-                tuile_posee = 0;
+                test = verification_combinaisons(plateau);
             }
-            printf("sleep for 2sec, changement de tour\n");
-            sleep(2);
-            if (tourjoueur == 3){
-                tourjoueur = 0;
+            if(test == true){	
+                tuile_posee = 0;printf("sleep for 2sec, changement de tour\n");
+                sleep(2);
+                if (tourjoueur == 3){
+                    tourjoueur = 0;
+                }
+                else{    
+                    tourjoueur = tourjoueur +1;
+                }
+                inventaire_en_chevalet(&joueur[tourjoueur], chevalet);
+                SDL_Update_window(renderer, plateau, chevalet);
+                printf("\nau tour de joueur %d\n",tourjoueur+1);
             }
-            else{    
-                tourjoueur = tourjoueur +1;
+            else{
+                SDL_Log("nnnnn");
+                SDL_Update_window(renderer, plateau, chevalet);
+                notifyError(renderer);
             }
-	        inventaire_en_chevalet(&joueur[tourjoueur], chevalet);
-            SDL_Update_window(renderer, plateau, chevalet);
-            printf("\nau tour de joueur %d\n",tourjoueur+1);
         }
         else{
             //printf("returned coords x:%d,y:%d -> nothing\n");
@@ -251,9 +260,9 @@ BOUTON Mouse_Events(SDL_Renderer *renderer,TUILE plateau[13][10],TUILE chevalet[
                         //SDL_Log("Redo %d ; %d", posX, posY);
                         break; 
                     }
-                    if(posX >= 705 && posX <= 785 && posY >= 471 && posY <= 550)  {		
-                        bouton = clicvalid;
+                    if(posX >= 705 && posX <= 785 && posY >= 471 && posY <= 550)  {	
                         //SDL_Log("Valid %d ; %d", posX, posY);
+                        bouton = clicvalid;
                         break; 
                     }
                     if(posX >= 705 && posX <= 790 && posY >= 205 && posY <= 250) {

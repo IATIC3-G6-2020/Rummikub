@@ -3,6 +3,7 @@
 
 typedef enum {VIDE, NON_VIDE} TYPE_TUILE;
 typedef enum {c1,c2,c3,c4,c0} COULEUR_TUILE;
+typedef enum {false,true} bool;
 typedef struct TUILE
 {
 	int chiffre; //-1 pour les tuiles vides, 0 pour le joker? et le reste normal
@@ -15,6 +16,8 @@ typedef struct JOUEUR
 	int numero, score;
 	TUILE tuiles[30];
 }JOUEUR;
+
+
 
 void initialisation_plateau(TUILE plateau[13][10]);
 void initialisation_chevalet(TUILE chevalet[10][3]);
@@ -33,4 +36,8 @@ void piocher_tuile(JOUEUR *joueur, TUILE *paquet);
 void initialisation_inventaire(JOUEUR *joueur);
 void Change_TuileDeTableau(TUILE *a, TUILE *b);
 void initialisation_tableauDeTuile(TUILE **tableau, int x, int y);
+
+bool verification_combinaisons(TUILE plateau[13][10]);
+bool verification_combinaisons789(TUILE plateau[13][10], int i, int j);
+bool verification_combinaisons777(TUILE plateau[13][10], int i, int j);
 

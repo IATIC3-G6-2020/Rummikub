@@ -17,3 +17,4 @@ void SDL_AfficheTuile_plateau(SDL_Renderer *renderer, TUILE plateau[13][10]);
 void SDL_AfficheTuile_chevalet(SDL_Renderer *renderer, TUILE chevalet[10][3]);
 void SDL_Update_window(SDL_Renderer *renderer,TUILE plateau[13][10], TUILE chevalet[10][3]);
 void SDL_AfficheSelectonChevalet(SDL_Renderer *renderer, int ncc, int ncl, TUILE selectedtuile);
+void notifyError(SDL_Renderer *renderer);
